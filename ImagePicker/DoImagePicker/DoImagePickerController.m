@@ -162,16 +162,26 @@
 
     if (_nResultType == DO_PICKER_RESULT_UIIMAGE)
     {
-        for (int i = 0; i < _dSelected.count; i++)
-            [aResult addObject:[ASSETHELPER getImageAtIndex:[aKeys[i] integerValue] type:ASSET_PHOTO_SCREEN_SIZE]];
+        for (int i = 0; i < _dSelected.count; i++) {
+            UIImage *img = [ASSETHELPER getImageAtIndex:[aKeys[i] integerValue] type:ASSET_PHOTO_SCREEN_SIZE];
+            if (img) {
+                [aResult addObject:img];
+            }
+        }
     }
     else
     {
-        for (int i = 0; i < _dSelected.count; i++)
-            [aResult addObject:[ASSETHELPER getAssetAtIndex:[aKeys[i] integerValue]]];
+        for (int i = 0; i < _dSelected.count; i++) {
+            ALAsset *img = [ASSETHELPER getAssetAtIndex:[aKeys[i] integerValue]];
+            if (img) {
+                [aResult addObject:img];
+            }
+        }
     }
 
-    [_delegate didSelectPhotosFromDoImagePickerController:self result:aResult];
+    if (aResult.count) {
+        [_delegate didSelectPhotosFromDoImagePickerController:self result:aResult];
+    }
 }
 
 - (IBAction)onCancel:(id)sender
