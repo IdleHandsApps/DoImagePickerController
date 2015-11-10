@@ -226,31 +226,12 @@
     
     if (nType == ASSET_PHOTO_THUMBNAIL)
         iRef = [asset thumbnail];
+    else if (nType == ASSET_PHOTO_ASPECT_THUMBNAIL)
+        iRef = [asset aspectRatioThumbnail];
     else if (nType == ASSET_PHOTO_SCREEN_SIZE)
         iRef = [asset.defaultRepresentation fullScreenImage];
     else if (nType == ASSET_PHOTO_FULL_RESOLUTION)
-    {
-        NSString *strXMP = asset.defaultRepresentation.metadata[@"AdjustmentXMP"];
-        NSData *dXMP = [strXMP dataUsingEncoding:NSUTF8StringEncoding];
-        
-        CIImage *image = [CIImage imageWithCGImage:asset.defaultRepresentation.fullResolutionImage];
-        
-        NSError *error = nil;
-        NSArray *filterArray = [CIFilter filterArrayFromSerializedXMP:dXMP
-                                                     inputImageExtent:image.extent
-                                                                error:&error];
-        if (error) {
-            NSLog(@"Error during CIFilter creation: %@", [error localizedDescription]);
-        }
-        
-        for (CIFilter *filter in filterArray) {
-            [filter setValue:image forKey:kCIInputImageKey];
-            image = [filter outputImage];
-        }
-        
-        UIImage *iImage = [UIImage imageWithCIImage:image scale:1.0 orientation:(UIImageOrientation)asset.defaultRepresentation.orientation];
-        return iImage;
-    }
+        iRef = [asset.defaultRepresentation fullResolutionImage];
     
     return [UIImage imageWithCGImage:iRef];
 }
